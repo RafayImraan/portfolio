@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaEnvelope, FaMapMarkerAlt, FaPhone, FaGithub, FaLinkedin, FaTwitter, FaCalendarAlt, FaPaperPlane, FaCheckCircle, FaUpload, FaWhatsapp, FaBell, FaClock } from 'react-icons/fa';
+import { hapticFeedback } from '../utils/haptic';
 
 interface FormData {
   name: string;
@@ -57,11 +58,13 @@ export function Contact() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    hapticFeedback('light');
     setIsSubmitting(true);
-    
+
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
+      hapticFeedback('success');
       setFormData({
         name: '',
         email: '',
@@ -72,14 +75,16 @@ export function Contact() {
         message: '',
         attachment: null
       });
-      
+
       setTimeout(() => setIsSubmitted(false), 5000);
     }, 2000);
   };
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
+    hapticFeedback('light');
     setIsSubscribed(true);
+    hapticFeedback('success');
     setSubscribeEmail('');
     setTimeout(() => setIsSubscribed(false), 3000);
   };
@@ -155,7 +160,7 @@ export function Contact() {
             className="lg:col-span-2 space-y-6"
           >
             {/* Contact Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3 lg:gap-4">
               {contactInfo.map((info, idx) => (
                 <motion.a
                   key={idx}
@@ -166,14 +171,14 @@ export function Contact() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.1 }}
                   whileHover={{ scale: 1.02, y: -2 }}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all group"
+                  className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 rounded-xl bg-white/5 backdrop-blur-lg border border-white/10 hover:border-white/20 transition-all group min-h-[60px]"
                 >
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-r ${info.color} flex items-center justify-center shadow-lg`}>
-                    <info.icon className="text-xl text-white" />
+                  <div className={`w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gradient-to-r ${info.color} flex items-center justify-center shadow-lg flex-shrink-0`}>
+                    <info.icon className="text-lg lg:text-xl text-white" />
                   </div>
-                  <div>
-                    <div className="text-sm text-gray-400">{info.label}</div>
-                    <div className="text-white font-medium group-hover:text-indigo-400 transition-colors">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs lg:text-sm text-gray-400">{info.label}</div>
+                    <div className="text-white font-medium group-hover:text-indigo-400 transition-colors text-sm lg:text-base truncate">
                       {info.value}
                     </div>
                   </div>
@@ -340,7 +345,7 @@ export function Contact() {
                     />
                   </div>
 
-                  <div className="grid md:grid-cols-3 gap-6 mb-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Project Type
@@ -349,7 +354,7 @@ export function Contact() {
                         name="projectType"
                         value={formData.projectType}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all text-base"
                       >
                         <option value="" className="bg-gray-800">Select type</option>
                         {projectTypes.map(type => (
@@ -365,7 +370,7 @@ export function Contact() {
                         name="budget"
                         value={formData.budget}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all text-base"
                       >
                         <option value="" className="bg-gray-800">Select budget</option>
                         {budgetRanges.map(range => (
@@ -373,7 +378,7 @@ export function Contact() {
                         ))}
                       </select>
                     </div>
-                    <div>
+                    <div className="sm:col-span-2 lg:col-span-1">
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Timeline
                       </label>
@@ -381,7 +386,7 @@ export function Contact() {
                         name="timeline"
                         value={formData.timeline}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all"
+                        className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/10 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition-all text-base"
                       >
                         <option value="" className="bg-gray-800">Select timeline</option>
                         {timelines.map(t => (

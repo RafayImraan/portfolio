@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiMessageCircle, FiX, FiSend, FiUser, FiCpu } from 'react-icons/fi';
 import { useTheme } from '../context/ThemeContext';
+import { hapticFeedback } from '@/utils/haptic';
 
 interface Message {
   id: number;
@@ -70,6 +71,8 @@ export function Chatbot() {
   const handleSend = async (text?: string) => {
     const messageText = text || input.trim();
     if (!messageText) return;
+
+    hapticFeedback('light');
 
     const userMessage: Message = {
       id: Date.now(),

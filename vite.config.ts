@@ -16,4 +16,13 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  server: {
+    proxy: {
+      '/api/ip': {
+        target: 'https://ipapi.co',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/ip/, '/json'),
+      },
+    },
+  },
 });

@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, PanInfo } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { FiBriefcase, FiBookOpen, FiAward, FiCode, FiCalendar, FiMapPin, FiChevronDown } from 'react-icons/fi';
+import { FiBriefcase, FiBookOpen, FiAward, FiCode, FiCalendar, FiMapPin, FiChevronDown, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useTheme } from '../context/ThemeContext';
 
 const timeline = [
@@ -148,9 +148,14 @@ export function Experience() {
         </motion.div>
 
         {/* Timeline */}
-        <div className="relative">
+        <motion.div
+          className="relative flex flex-row overflow-x-auto md:flex-col md:overflow-visible"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.1}
+        >
           {/* Timeline line */}
-          <div className={`absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 ${
+          <div className={`hidden md:block absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 ${
             theme === 'dark' ? 'bg-slate-700' : 'bg-gray-300'
           }`} />
 
@@ -166,18 +171,18 @@ export function Experience() {
                 initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`relative flex items-start mb-8 ${
+                className={`relative flex-shrink-0 w-80 mr-4 md:flex md:items-start md:mb-8 md:w-auto md:mr-0 ${
                   isLeft ? 'md:flex-row-reverse' : ''
                 }`}
               >
                 {/* Timeline dot */}
                 <motion.div
-                  className={`absolute left-8 md:left-1/2 -translate-x-1/2 z-10 w-4 h-4 rounded-full bg-gradient-to-br ${colorClass}`}
+                  className={`absolute top-0 left-1/2 -translate-x-1/2 md:left-8 md:top-auto z-10 w-4 h-4 rounded-full bg-gradient-to-br ${colorClass}`}
                   whileHover={{ scale: 1.5 }}
                 />
 
                 {/* Content */}
-                <div className={`ml-16 md:ml-0 md:w-1/2 ${
+                <div className={`mt-4 md:ml-0 md:w-1/2 ${
                   isLeft ? 'md:pl-8' : 'md:pr-8'
                 }`}>
                   <motion.div
@@ -301,7 +306,7 @@ export function Experience() {
               </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

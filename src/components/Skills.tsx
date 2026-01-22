@@ -158,26 +158,26 @@ export function Skills() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className={`p-6 rounded-3xl ${
+            className={`p-4 sm:p-6 rounded-3xl ${
               theme === 'dark' ? 'bg-slate-800/80' : 'bg-white'
             } border ${
               theme === 'dark' ? 'border-slate-700' : 'border-gray-200'
             }`}
           >
-            <h3 className={`text-xl font-bold mb-4 text-center ${
+            <h3 className={`text-lg sm:text-xl font-bold mb-4 text-center ${
               theme === 'dark' ? 'text-white' : 'text-slate-900'
             }`}>
               Skill Distribution
             </h3>
-            <div className="h-64">
+            <div className="h-48 sm:h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={overallSkills}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
+                    innerRadius={40}
+                    outerRadius={80}
                     paddingAngle={5}
                     dataKey="value"
                   >
@@ -196,7 +196,7 @@ export function Skills() {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <p className={`text-center text-sm ${
+            <p className={`text-center text-xs sm:text-sm ${
               theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
             }`}>
               Balanced expertise across the full stack

@@ -1,33 +1,41 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 import { FaGithub, FaExternalLinkAlt, FaStar, FaCodeBranch, FaFilter, FaSearch, FaPlay, FaCode, FaPython, FaRobot, FaCar, FaLeaf, FaBriefcase, FaHospital, FaChartBar } from 'react-icons/fa';
 import { SiJavascript } from 'react-icons/si';
+import { useFocusTrap, useAriaLive, useId, ScreenReaderOnly } from '../utils/accessibility';
 
 const projectThumbnails = {
   'crop-yield': [
-    'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=250&fit=crop'
+    '/src/images/cropyield.png',
+    '/src/images/cropyield2.png',
+    '/src/images/cropyield3.png'
   ],
   'car-price': [
-    'https://images.unsplash.com/photo-1493238792000-8113da705763?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=400&h=250&fit=crop'
+    '/src/images/car.png',
+    '/src/images/car2.png',
+    '/src/images/car3.png',
+    '/src/images/car4.png'
   ],
   'iris': [
-    'https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1444021465936-c6ca81d39b84?w=400&h=250&fit=crop'
+    '/src/images/iris.png',
+    '/src/images/iris2.png'
   ],
   'hospital': [
-    'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1504439468489-c8920d796a29?w=400&h=250&fit=crop'
+    '/src/images/medicore.mp4',
+    '/src/images/medicore2.mp4'
   ],
   'employment': [
-    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop',
-    'https://images.unsplash.com/photo-1543286386-713bdd548da4?w=400&h=250&fit=crop'
+    '/src/images/employment.png',
+    '/src/images/employment2.png',
+    '/src/images/employment3.png',
+    '/src/images/employment4.png'
+  ],
+  'weather': [
+    '/src/images/weatheranalysis.png',
+    '/src/images/weatheranalysis2.png',
+    '/src/images/weatheranalysis3.png',
+    '/src/images/weatheranalysis4.png'
   ]
 };
 
@@ -82,7 +90,41 @@ pre_covid = df[df['date'] < '2020-03-01']['rate'].mean()
 post_covid = df[df['date'] >= '2020-03-01']['rate'].mean()
 
 print(f"Pre-Covid: {pre_covid:.2f}%")
-print(f"Post-Covid: {post_covid:.2f}%")`
+print(f"Post-Covid: {post_covid:.2f}%)`,
+
+  weather: `# Weather Impact Analysis
+import pandas as pd
+import plotly.express as px
+from dash import Dash, html, dcc, Input, Output
+
+# Load weather data
+df = pd.read_csv('weather_data.csv')
+df['date'] = pd.to_datetime(df['date'])
+
+# Create interactive dashboard
+app = Dash(__name__)
+app.layout = html.Div([
+    html.H1('Weather Impact Analysis Dashboard'),
+    dcc.Dropdown(
+        id='city-dropdown',
+        options=[{'label': city, 'value': city} for city in df['city'].unique()],
+        value=df['city'].iloc[0]
+    ),
+    dcc.Graph(id='temperature-trend')
+])
+
+@app.callback(
+    Output('temperature-trend', 'figure'),
+    Input('city-dropdown', 'value')
+)
+def update_graph(selected_city):
+    filtered_df = df[df['city'] == selected_city]
+    fig = px.line(filtered_df, x='date', y='temperature',
+                  title=f'Temperature Trends in {selected_city}')
+    return fig
+
+if __name__ == '__main__':
+    app.run_server(debug=True)`
 };
 
 interface ProjectType {
@@ -118,7 +160,7 @@ const projects: ProjectType[] = [
     stars: 15,
     forks: 8,
     topics: ['machine-learning', 'agriculture', 'data-science', 'prediction'],
-    html_url: 'https://github.com/RafayImraan/crop-yield-prediction',
+    html_url: 'https://github.com/RafayImraan/crop-yeild-prediction-in-pakistan',
     homepage: '',
     thumbnails: projectThumbnails['crop-yield'],
     icon: FaLeaf,
@@ -139,7 +181,7 @@ const projects: ProjectType[] = [
     stars: 12,
     forks: 5,
     topics: ['machine-learning', 'regression', 'data-analysis', 'prediction'],
-    html_url: 'https://github.com/RafayImraan/car-price-prediction',
+    html_url: 'https://github.com/RafayImraan/car-prediction',
     homepage: '',
     thumbnails: projectThumbnails['car-price'],
     icon: FaCar,
@@ -160,7 +202,7 @@ const projects: ProjectType[] = [
     stars: 18,
     forks: 10,
     topics: ['machine-learning', 'classification', 'random-forest', 'data-visualization'],
-    html_url: 'https://github.com/RafayImraan/iris-classification',
+    html_url: 'https://github.com/RafayImraan/codealpha_tasks/tree/main/CodeAlpha_Iris_Classification',
     homepage: '',
     thumbnails: projectThumbnails['iris'],
     icon: FaRobot,
@@ -202,7 +244,7 @@ const projects: ProjectType[] = [
     stars: 10,
     forks: 4,
     topics: ['data-analysis', 'visualization', 'economics', 'covid-analysis'],
-    html_url: 'https://github.com/RafayImraan/employment-analysis',
+    html_url: 'https://github.com/RafayImraan/codealpha_tasks/tree/main/CodeAlpha_Unemployment_Analysis',
     homepage: '',
     thumbnails: projectThumbnails['employment'],
     icon: FaBriefcase,
@@ -212,6 +254,27 @@ const projects: ProjectType[] = [
     year: 2024,
     demoType: 'visualization',
     codeKey: 'employment'
+  },
+  {
+    id: 6,
+    name: 'Weather Impact Analysis',
+    description: 'This project analyzes global weather data to explore trends, correlations, and extreme events, incorporating machine learning models for predictive scenarios and featuring an interactive Dash dashboard for data visualization and real-time insights.',
+    longDescription: 'A comprehensive weather analysis project that examines global weather patterns, climate trends, and extreme weather events. The system incorporates machine learning models for predictive weather scenarios, time series analysis for forecasting, and features an interactive Dash dashboard with real-time data visualization, statistical modeling, and scenario forecasting capabilities. Includes data processing pipelines, statistical analysis, ML model development, and web-based interactive visualizations.',
+    language: 'Python',
+    techStack: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Statsmodels', 'Matplotlib', 'Seaborn', 'Plotly', 'Dash', 'Dash-bootstrap-components', 'Scikit-learn', 'XGBoost', 'Joblib', 'Requests', 'Reportlab', 'Kaleido'],
+    stars: 14,
+    forks: 6,
+    topics: ['weather-data', 'climate-analysis', 'predictive-modeling', 'data-visualization', 'machine-learning', 'time-series-analysis', 'scenario-forecasting'],
+    html_url: 'https://github.com/RafayImraan/weather-analysis',
+    homepage: '',
+    thumbnails: projectThumbnails['weather'],
+    icon: FaChartBar,
+    color: 'from-cyan-500 to-blue-600',
+    difficulty: 'Intermediate',
+    category: 'Data Analysis',
+    year: 2025,
+    demoType: 'visualization',
+    codeKey: 'weather'
   }
 ];
 
@@ -220,35 +283,86 @@ const difficulties = ['All', 'Beginner', 'Intermediate', 'Advanced'];
 const languages = ['All', 'Python', 'JavaScript'];
 const sortOptions = ['Newest', 'Most Stars', 'Most Forks', 'Name A-Z'];
 
+const LazyImage = ({ src, alt, className, isVideo }: { src: string, alt: string, className: string, isVideo: boolean }) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const imgRef = useRef<HTMLImageElement | HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (imgRef.current) {
+      observer.observe(imgRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  const handleLoad = () => {
+    setIsLoaded(true);
+  };
+
+  if (isVideo) {
+    return (
+      <motion.video
+        ref={imgRef as React.RefObject<HTMLVideoElement>}
+        src={isInView ? src : undefined}
+        className={`${className} ${isLoaded ? 'lazy-image loaded' : 'lazy-image lazy-image-loading'}`}
+        autoPlay
+        muted
+        loop
+        playsInline
+        onLoadedData={handleLoad}
+      />
+    );
+  }
+
+  return (
+    <motion.img
+      ref={imgRef as React.RefObject<HTMLImageElement>}
+      src={isInView ? src : undefined}
+      alt={alt}
+      className={`${className} ${isLoaded ? 'lazy-image loaded' : 'lazy-image lazy-image-loading'}`}
+      onLoad={handleLoad}
+    />
+  );
+};
+
 const ThumbnailSlider = ({ thumbnails, isHovered }: { thumbnails: string[], isHovered: boolean }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    if (isHovered) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % thumbnails.length);
-      }, 1500);
-      return () => clearInterval(interval);
-    }
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % thumbnails.length);
+    }, isHovered ? 800 : 2500); // Faster sliding when hovered, slower when not
+    return () => clearInterval(interval);
   }, [isHovered, thumbnails.length]);
+
+  const currentMedia = thumbnails[currentIndex];
+  const isVideo = currentMedia?.endsWith('.mp4') || currentMedia?.endsWith('.webm') || currentMedia?.endsWith('.ogg');
 
   return (
     <div className="relative w-full h-48 overflow-hidden rounded-t-xl">
       <AnimatePresence mode="wait">
-        <motion.img
+        <LazyImage
           key={currentIndex}
-          src={thumbnails[currentIndex]}
+          src={currentMedia}
           alt="Project preview"
           className="absolute w-full h-full object-cover"
-          initial={{ opacity: 0, scale: 1.1 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.5 }}
+          isVideo={isVideo}
         />
       </AnimatePresence>
-      
+
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-      
+
       <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
         {thumbnails.map((_, idx) => (
           <div
@@ -259,7 +373,7 @@ const ThumbnailSlider = ({ thumbnails, isHovered }: { thumbnails: string[], isHo
           />
         ))}
       </div>
-      
+
       {isHovered && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -577,65 +691,99 @@ const ProjectCard = ({ project, onClick }: { project: ProjectType, onClick: () =
   );
 };
 
-const ProjectModal = ({ project, onClose }: { project: ProjectType, onClose: () => void }) => {
+const ProjectModal = ({ project, onClose, onNext, onPrev }: { project: ProjectType, onClose: () => void, onNext?: () => void, onPrev?: () => void }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'code' | 'demo'>('overview');
   const Icon = project.icon;
+  const modalRef = useFocusTrap(true);
+  const { announce } = useAriaLive();
+  const modalId = useId('project-modal');
+  const titleId = useId('modal-title');
+
+  useEffect(() => {
+    announce(`Project modal opened: ${project.name}`);
+  }, [project.name, announce]);
+
+  const handleClose = () => {
+    announce('Project modal closed');
+    onClose();
+  };
+
+  const handleTabChange = (tab: 'overview' | 'code' | 'demo') => {
+    setActiveTab(tab);
+    announce(`${tab} tab selected`);
+  };
+
+  const { ref: swipeRef, ...swipeHandlers } = useSwipeable({
+    onSwipedLeft: onNext,
+    onSwipedRight: onPrev,
+    preventScrollOnSwipe: true,
+    trackMouse: false
+  });
+
+  const combinedRef = useCallback((node: HTMLDivElement | null) => {
+    modalRef.current = node;
+    swipeRef(node);
+  }, [modalRef, swipeRef]);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
+        ref={combinedRef}
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl"
+        {...swipeHandlers}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={`tabpanel-${activeTab}`}
+        className="bg-white dark:bg-gray-800 rounded-2xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden shadow-2xl mx-2 sm:mx-4 focus:outline-none"
       >
-        <div className="relative h-56">
-          <img
-            src={project.thumbnails[0]}
-            alt={project.name}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors"
-          >
-            ✕
-          </button>
-          <div className="absolute bottom-4 left-6 right-6">
-            <div className="flex items-center gap-4 mb-2">
-              <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${project.color} flex items-center justify-center`}>
-                <Icon className="text-white text-2xl" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-white">{project.name}</h2>
-                <div className="flex items-center gap-3 mt-1">
-                  <span className="text-white/80 text-sm">{project.category}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${
-                    project.difficulty === 'Advanced' ? 'bg-red-500/80' :
-                    project.difficulty === 'Intermediate' ? 'bg-yellow-500/80' : 'bg-green-500/80'
-                  } text-white`}>
-                    {project.difficulty}
-                  </span>
-                </div>
+        <div className="p-6 pb-0">
+          <div className="flex items-center gap-4 mb-4">
+            <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${project.color} flex items-center justify-center`}>
+              <Icon className="text-white text-2xl" aria-hidden="true" />
+            </div>
+            <div className="flex-1">
+              <h2 id={titleId} className="text-2xl font-bold dark:text-white">{project.name}</h2>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="text-gray-600 dark:text-gray-400 text-sm">{project.category}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  project.difficulty === 'Advanced' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
+                  project.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-600 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                  'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
+                }`}>
+                  {project.difficulty}
+                </span>
               </div>
             </div>
+            <button
+              onClick={handleClose}
+              className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center text-gray-600 dark:text-gray-400 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+              aria-label="Close project modal"
+            >
+              ✕
+            </button>
           </div>
         </div>
 
-        <div className="flex border-b border-gray-200 dark:border-gray-700">
+        <div className="flex border-b border-gray-200 dark:border-gray-700" role="tablist" aria-label="Project details tabs">
           {(['overview', 'code', 'demo'] as const).map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-3 px-4 text-sm font-medium transition-colors ${
+              onClick={() => handleTabChange(tab)}
+              role="tab"
+              aria-selected={activeTab === tab}
+              aria-controls={`tabpanel-${tab}`}
+              id={`tab-${tab}`}
+              className={`flex-1 py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 ${
                 activeTab === tab
                   ? 'text-blue-600 border-b-2 border-blue-600 dark:text-blue-400'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
@@ -649,6 +797,13 @@ const ProjectModal = ({ project, onClose }: { project: ProjectType, onClose: () 
         </div>
 
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-20rem)]">
+          <ScreenReaderOnly>
+            <div aria-live="polite" aria-atomic="true">
+              {activeTab === 'overview' && `Overview tab content: ${project.longDescription.slice(0, 100)}...`}
+              {activeTab === 'code' && 'Code tab content: Download project source code and view details'}
+              {activeTab === 'demo' && 'Live demo tab content: Interactive machine learning demonstration'}
+            </div>
+          </ScreenReaderOnly>
           {activeTab === 'overview' && (
             <div className="space-y-6">
               <div>
@@ -686,12 +841,55 @@ const ProjectModal = ({ project, onClose }: { project: ProjectType, onClose: () 
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              {!project.homepage && project.thumbnails.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 dark:text-white">Project Screenshots</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    {project.thumbnails.map((thumbnail, idx) => {
+                      const isVideo = thumbnail.endsWith('.mp4') || thumbnail.endsWith('.webm') || thumbnail.endsWith('.ogg');
+                      return (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: idx * 0.1 }}
+                          className="relative group cursor-pointer"
+                          onClick={() => window.open(thumbnail, '_blank')}
+                        >
+                          {isVideo ? (
+                            <video
+                              src={thumbnail}
+                              className="w-full h-24 sm:h-32 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow"
+                              muted
+                              loop
+                              playsInline
+                            />
+                          ) : (
+                            <img
+                              src={thumbnail}
+                              alt={`${project.name} screenshot ${idx + 1}`}
+                              className="w-full h-24 sm:h-32 object-cover rounded-lg shadow-md group-hover:shadow-lg transition-shadow"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors rounded-lg flex items-center justify-center">
+                            <FaExternalLinkAlt className="text-white opacity-0 group-hover:opacity-100 transition-opacity text-lg sm:text-xl" />
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                    Click on any image to view in full size
+                  </p>
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <a
                   href={project.html_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl transition-colors text-sm sm:text-base"
                 >
                   <FaGithub />
                   View on GitHub
@@ -701,7 +899,7 @@ const ProjectModal = ({ project, onClose }: { project: ProjectType, onClose: () 
                     href={project.homepage}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 bg-gradient-to-r ${project.color} text-white rounded-xl transition-opacity hover:opacity-90`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r ${project.color} text-white rounded-xl transition-opacity hover:opacity-90 text-sm sm:text-base`}
                   >
                     <FaExternalLinkAlt />
                     Live Demo
@@ -712,7 +910,65 @@ const ProjectModal = ({ project, onClose }: { project: ProjectType, onClose: () 
           )}
 
           {activeTab === 'code' && (
-            <CodePreview code={codeSnippets[project.codeKey as keyof typeof codeSnippets] || ''} language={project.language} />
+            <div className="space-y-6" role="tabpanel" id="tabpanel-code" aria-labelledby="tab-code">
+              <div>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 dark:text-white">
+                  <FaCode className="text-blue-500" />
+                  Download Project
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Get the complete source code for this project. Download the latest version directly from GitHub.
+                </p>
+                <div className="flex gap-4">
+                  <a
+                    href={`${project.html_url}/archive/refs/heads/main.zip`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 group"
+                  >
+                    <FaCode className="text-xl group-hover:scale-110 transition-transform" />
+                    <span className="font-semibold">Download ZIP</span>
+                  </a>
+                  <a
+                    href={project.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-gray-900/25 group"
+                  >
+                    <FaGithub className="text-xl group-hover:scale-110 transition-transform" />
+                    <span className="font-semibold">View on GitHub</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <h4 className="text-md font-semibold mb-3 dark:text-white">Project Details</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-gray-500 dark:text-gray-400">Language:</span>
+                    <span className="ml-2 font-medium dark:text-white">{project.language}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 dark:text-gray-400">Difficulty:</span>
+                    <span className={`ml-2 font-medium ${
+                      project.difficulty === 'Advanced' ? 'text-red-600 dark:text-red-400' :
+                      project.difficulty === 'Intermediate' ? 'text-yellow-600 dark:text-yellow-400' :
+                      'text-green-600 dark:text-green-400'
+                    }`}>
+                      {project.difficulty}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 dark:text-gray-400">Stars:</span>
+                    <span className="ml-2 font-medium dark:text-white">{project.stars}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500 dark:text-gray-400">Forks:</span>
+                    <span className="ml-2 font-medium dark:text-white">{project.forks}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
           {activeTab === 'demo' && (
@@ -782,6 +1038,22 @@ export default function Projects() {
         default: return b.year - a.year;
       }
     });
+
+  const navigateToProject = (direction: 'next' | 'prev') => {
+    if (!selectedProject) return;
+
+    const currentIndex = filteredProjects.findIndex(p => p.id === selectedProject.id);
+    if (currentIndex === -1) return;
+
+    let newIndex;
+    if (direction === 'next') {
+      newIndex = (currentIndex + 1) % filteredProjects.length;
+    } else {
+      newIndex = currentIndex === 0 ? filteredProjects.length - 1 : currentIndex - 1;
+    }
+
+    setSelectedProject(filteredProjects[newIndex]);
+  };
 
   return (
     <section id="projects" className="py-20 bg-gray-50 dark:bg-gray-900">
@@ -904,17 +1176,19 @@ export default function Projects() {
           </AnimatePresence>
         </div>
 
-        <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map(project => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                onClick={() => setSelectedProject(project)}
-              />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+        <div className="container projects-container w-full">
+          <motion.div layout className="projects-grid">
+            <AnimatePresence mode="popLayout">
+              {filteredProjects.map(project => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onClick={() => setSelectedProject(project)}
+                />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
 
         {filteredProjects.length === 0 && (
           <motion.div
@@ -933,6 +1207,8 @@ export default function Projects() {
             <ProjectModal
               project={selectedProject}
               onClose={() => setSelectedProject(null)}
+              onNext={() => navigateToProject('next')}
+              onPrev={() => navigateToProject('prev')}
             />
           )}
         </AnimatePresence>

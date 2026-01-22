@@ -1,20 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import PullToRefresh from 'react-pull-to-refresh';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
-import { About } from './components/About';
-import { Skills } from './components/Skills';
-import Projects from './components/Projects';
-import { Experience } from './components/Experience';
-import { Testimonials } from './components/Testimonials';
-import { Awards } from './components/Awards';
-import { TechStack } from './components/TechStack';
-import { Contact } from './components/Contact';
+const About = lazy(() => import('./components/About').then(module => ({ default: module.About })));
+const Skills = lazy(() => import('./components/Skills').then(module => ({ default: module.Skills })));
+const Projects = lazy(() => import('./components/Projects'));
+const Experience = lazy(() => import('./components/Experience').then(module => ({ default: module.Experience })));
+const Testimonials = lazy(() => import('./components/Testimonials').then(module => ({ default: module.Testimonials })));
+const Awards = lazy(() => import('./components/Awards').then(module => ({ default: module.Awards })));
+const TechStack = lazy(() => import('./components/TechStack').then(module => ({ default: module.TechStack })));
+const Contact = lazy(() => import('./components/Contact').then(module => ({ default: module.Contact })));
 import { Footer } from './components/Footer';
 import { ParticleBackground } from './components/ParticleBackground';
 import { Chatbot } from './components/Chatbot';
 import { ScrollProgress } from './components/ScrollProgress';
 import { ThemeContext } from './context/ThemeContext';
+import { hapticFeedback } from './utils/haptic';
+import emailjs from '@emailjs/browser';
+emailjs.init('_-lgo5epiymiuVHxv'); // your public key
+
 
 export function App() {
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
@@ -76,17 +81,29 @@ export function App() {
         <ParticleBackground />
         <ScrollProgress />
         <Header />
-        <main>
-          <Hero />
-          <About />
-          <Skills />
-          <TechStack />
-          <Projects />
-          <Experience />
-          <Awards />
-          <Testimonials />
-          <Contact />
-        </main>
+        <PullToRefresh
+          onRefresh={async () => {
+            hapticFeedback('medium');
+            // Small delay to allow haptic feedback to trigger
+            await new Promise(resolve => setTimeout(resolve, 100));
+            window.location.reload();
+          }}
+          className="pull-to-refresh"
+        >
+          <main>
+            <Hero />
+            <Suspense fallback={<div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-500"></div></div>}>
+              <About />
+              <Skills />
+              <TechStack />
+              <Projects />
+              <Experience />
+              <Awards />
+              <Testimonials />
+              <Contact />
+            </Suspense>
+          </main>
+        </PullToRefresh>
         <Footer />
         <Chatbot />
       </div>

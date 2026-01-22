@@ -47,7 +47,7 @@ const FloatingCodeBlock = () => (
     initial={{ opacity: 0, x: 100 }}
     animate={{ opacity: 1, x: 0 }}
     transition={{ delay: 1, duration: 0.8 }}
-    className="absolute right-10 top-1/4 hidden xl:block"
+    className="absolute right-4 top-1/4 hidden lg:block max-w-xs"
   >
     <div className="bg-gray-900/90 backdrop-blur-lg rounded-xl p-4 shadow-2xl border border-gray-700/50 transform perspective-1000 rotate-y-6">
       <div className="flex items-center gap-2 mb-3">
@@ -86,7 +86,7 @@ const TechIcons = () => {
   ];
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden hidden md:block">
       {techs.map((tech, idx) => (
         <motion.div
           key={idx}
@@ -181,8 +181,8 @@ export function Hero() {
       setGreeting(getGreeting());
     }, 60000);
 
-    // Try to get visitor location
-    fetch('https://ipapi.co/json/')
+    // Try to get visitor location using Vite proxy
+    fetch('/api/ip')
       .then(res => res.json())
       .then(data => {
         if (data.city && data.country_name) {
