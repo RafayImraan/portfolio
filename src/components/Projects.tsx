@@ -7,35 +7,35 @@ import { useFocusTrap, useAriaLive, useId, ScreenReaderOnly } from '../utils/acc
 
 const projectThumbnails = {
   'crop-yield': [
-    '/src/images/cropyield.png',
-    '/src/images/cropyield2.png',
-    '/src/images/cropyield3.png'
+    '/images/cropyield.png',
+    '/images/cropyield2.png',
+    '/images/cropyield3.png'
   ],
   'car-price': [
-    '/src/images/car.png',
-    '/src/images/car2.png',
-    '/src/images/car3.png',
-    '/src/images/car4.png'
+    '/images/car.png',
+    '/images/car2.png',
+    '/images/car3.png',
+    '/images/car4.png'
   ],
   'iris': [
-    '/src/images/iris.png',
-    '/src/images/iris2.png'
+    '/images/iris.png',
+    '/images/iris2.png'
   ],
   'hospital': [
-    '/src/images/medicore.mp4',
-    '/src/images/medicore2.mp4'
+    '/images/medicore.mp4',
+    '/images/medicore2.mp4'
   ],
   'employment': [
-    '/src/images/employment.png',
-    '/src/images/employment2.png',
-    '/src/images/employment3.png',
-    '/src/images/employment4.png'
+    '/images/employment.png',
+    '/images/employment2.png',
+    '/images/employment3.png',
+    '/images/employment4.png'
   ],
   'weather': [
-    '/src/images/weatheranalysis.png',
-    '/src/images/weatheranalysis2.png',
-    '/src/images/weatheranalysis3.png',
-    '/src/images/weatheranalysis4.png'
+    '/images/weatheranalysis.png',
+    '/images/weatheranalysis2.png',
+    '/images/weatheranalysis3.png',
+    '/images/weatheranalysis4.png'
   ]
 };
 
