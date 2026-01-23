@@ -1,6 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import PullToRefresh from 'react-pull-to-refresh';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 const About = lazy(() => import('./components/About').then(module => ({ default: module.About })));
@@ -16,7 +15,6 @@ import { ParticleBackground } from './components/ParticleBackground';
 import { Chatbot } from './components/Chatbot';
 import { ScrollProgress } from './components/ScrollProgress';
 import { ThemeContext } from './context/ThemeContext';
-import { hapticFeedback } from './utils/haptic';
 import emailjs from '@emailjs/browser';
 emailjs.init('_-lgo5epiymiuVHxv'); // your public key
 
@@ -81,29 +79,19 @@ export function App() {
         <ParticleBackground />
         <ScrollProgress />
         <Header />
-        <PullToRefresh
-          onRefresh={async () => {
-            hapticFeedback('medium');
-            // Small delay to allow haptic feedback to trigger
-            await new Promise(resolve => setTimeout(resolve, 100));
-            window.location.reload();
-          }}
-          className="pull-to-refresh"
-        >
-          <main>
-            <Hero />
-            <Suspense fallback={<div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-500"></div></div>}>
-              <About />
-              <Skills />
-              <TechStack />
-              <Projects />
-              <Experience />
-              <Awards />
-              <Testimonials />
-              <Contact />
-            </Suspense>
-          </main>
-        </PullToRefresh>
+        <main>
+          <Hero />
+          <Suspense fallback={<div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-500"></div></div>}>
+            <About />
+            <Skills />
+            <TechStack />
+            <Projects />
+            <Experience />
+            <Awards />
+            <Testimonials />
+            <Contact />
+          </Suspense>
+        </main>
         <Footer />
         <Chatbot />
       </div>
