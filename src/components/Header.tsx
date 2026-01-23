@@ -12,6 +12,13 @@ const navLinks = [
   { name: 'Contact', href: '#contact' },
 ];
 
+const scrollToSection = (id: string) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -146,7 +153,11 @@ export function Header() {
                       ? 'text-gray-300 hover:text-white hover:bg-white/10'
                       : 'text-gray-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsMobileMenuOpen(false);
+                    setTimeout(() => scrollToSection(link.href.slice(1)), 300);
+                  }}
                 >
                   {link.name}
                 </motion.a>

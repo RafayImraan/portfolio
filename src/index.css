@@ -5,6 +5,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Scroll margin for sections to account for fixed header */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
