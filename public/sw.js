@@ -1,10 +1,8 @@
 const CACHE_NAME = 'portfolio-v1';
 const urlsToCache = [
   '/',
-  '/src/main.tsx',
-  '/src/index.css',
-  '/src/App.tsx',
-  // Add other static assets
+  '/index.html',
+  '/manifest.json'
 ];
 
 // Install SW
@@ -26,9 +24,27 @@ self.addEventListener('fetch', (event) => {
         if (response) {
           return response;
         }
-        return fetch(event.request);
-      }
-    )
+
+        // Clone the request
+        const fetchRequest = event.request.clone();
+
+        return fetch(fetchRequest).then((response) => {
+          // Check if we received a valid response
+          if (!response || response.status !== 200 || response.type !== 'basic') {
+            return response;
+          }
+
+          // Clone the response
+          const responseToCache = response.clone();
+
+          caches.open(CACHE_NAME)
+            .then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+
+          return response;
+        });
+      })
   );
 });
 
